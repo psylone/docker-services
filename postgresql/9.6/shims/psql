@@ -1,0 +1,3 @@
+#!/usr/bin/env bash -l
+
+docker exec -i -t pg-9.6 psql "$@"

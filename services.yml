@@ -10,32 +10,53 @@ services:
       - 9202:9200
       - 9302:9300
 
-  es-5.2:
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.2.2
-    container_name: es-5.2
+  es-5:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.9
+    container_name: es-5
     volumes:
-      - ./elasticsearch/5.2.2/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./elasticsearch/5.6.9/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - es-5-data:/usr/share/elasticsearch/data
+      - es-5-plugins:/usr/share/elasticsearch/plugins
+    ports:
+      - 9200:9200
+      - 9300:9300
+    restart: always
+
+  es:
+    image: dcr.iconjob.co/elasticsearch:latest
+    container_name: es
+    volumes:
+      - ./elasticsearch/5.6.9/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - es-5-data:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
       - 9300:9300
     restart: always
 
-  es-5:
-    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.3
-    container_name: es-5
+  es-6:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.3.1
+    container_name: es-6
     volumes:
-      - ./elasticsearch/5.6.3/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-      - es-5-data:/usr/share/elasticsearch/data
+      - ./elasticsearch/6.3.1/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - es-6-plugins:/usr/share/elasticsearch/plugins
     ports:
       - 9201:9200
-      - 9301:9300
+      - 9202:9300
 
-  pg-9.5:
-    image: postgres:9.5
-    container_name: pg-9.5
+  nats:
+    image: nats
+    container_name: nats
+    ports:
+      - 4222:4222
+      - 8222:8222
+      - 6222:6222
+    restart: always
+
+  pg-9.6:
+    image: postgres:9.6.6
+    container_name: pg-9.6
     volumes:
-      - pg-9.5-data:/var/lib/postgresql/data
+      - pg-9.6-data:/var/lib/postgresql/data
     ports:
       - 5432:5432
     restart: always
@@ -67,8 +88,30 @@ services:
       - 6379:6379
     restart: always
 
+  clickhouse-server:
+    image: yandex/clickhouse-server
+    container_name: clickhouse-server
+    volumes:
+      - clickhouse:/var/lib/clickhouse
+    networks:
+      default:
+        aliases:
+          - clickhouse
+    ports:
+      - 8123:8123
+      - 9000:9000
+      - 9009:9009
+    restart: always
+
+  clickhouse-client:
+    image: yandex/clickhouse-client
+    container_name: clickhouse-client
+
 volumes:
   es-2-data:
   es-5-data:
-  pg-9.5-data:
+  es-5-plugins:
+  es-6-plugins:
+  pg-9.6-data:
   pg-10-data:
+  clickhouse:

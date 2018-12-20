@@ -1,3 +1,0 @@
-#!/usr/bin/env bash -l
-
-docker exec pg-9.5 pg_dump "$@"

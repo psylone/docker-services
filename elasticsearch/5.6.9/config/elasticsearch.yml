@@ -10,3 +10,7 @@ discovery.zen.minimum_master_nodes: 1
 xpack.security.enabled: false
 xpack.watcher.enabled: false
 xpack.monitoring.enabled: false
+
+# script.max_compilations_per_minute: 120
+
+# logger.org.elasticsearch.script: trace
